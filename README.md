@@ -53,5 +53,34 @@ Ces classes fournissent une structure de base pour modéliser les entités du la
 # Digramme Cas Utilisation:
 
 ![DiagrammeCasUtilisationLabXpert](https://github.com/Mouslih0/lab-xpert-spring-boot/assets/106397107/cb87d764-a498-4071-8b3b-ce3c77e7552c)
+JWTHeleper
+Cette classe fournit des méthodes pour générer des tokens JWT, extraire un token à partir de l'en-tête d'autorisation et créer une carte contenant à la fois le token d'accès et le token de rafraîchissement.
+
+generateAccessToken(String email, List<String> roles): Génère un token d'accès JWT en utilisant l'email de l'utilisateur et la liste de rôles fournie.
+generateRefreshToken(String email): Génère un token de rafraîchissement JWT en utilisant l'email de l'utilisateur.
+extractTokenFromHeaderIfExists(String authorizationHeader): Extrait un token à partir de l'en-tête d'autorisation, s'il existe.
+getTokensMap(String jwtAccessToken, String jwtRefreshToken): Crée une carte contenant le token d'accès et le token de rafraîchissement.
+JWTAuthenficationFilter
+Cette classe étend UsernamePasswordAuthenticationFilter de Spring Security pour gérer l'authentification des utilisateurs à l'aide d'un nom d'utilisateur et d'un mot de passe.
+
+attemptAuthentication(HttpServletRequest request, HttpServletResponse response): Tente l'authentification en récupérant le nom d'utilisateur et le mot de passe à partir de la requête HTTP et en les utilisant pour créer un token d'authentification.
+successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult): Gère l'authentification réussie en générant un token d'accès JWT et un token de rafraîchissement JWT et en les renvoyant dans la réponse HTTP.
+JWTAuthorizationFilter
+Cette classe hérite de OncePerRequestFilter de Spring Security et est responsable de l'autorisation des utilisateurs à l'aide de tokens JWT.
+
+doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain): Vérifie le token d'accès JWT dans l'en-tête d'autorisation de la requête HTTP. Si le token est valide, il extrait l'email de l'utilisateur et ses rôles à partir du token, puis crée un objet Authentication pour l'utilisateur et le stocke dans le contexte de sécurité. Sinon, il laisse passer la requête.
+SecrutyConfig et UserDetailsServiceimpl
+Ces classes sont des configurations de sécurité Spring.
+
+SecrutyConfig configure les filtres de sécurité, les règles d'autorisation et d'authentification, ainsi que le gestionnaire d'authentification.
+UserDetailsServiceimpl implémente l'interface UserDetailsService de Spring Security pour charger les détails de l'utilisateur à partir du service utilisateur et les utiliser dans le processus d'authentification.
+Ces composants travaillent ensemble pour fournir une couche de sécurité robuste basée sur JWT dans votre application Spring Boot. Assurez-vous de configurer correctement les règles d'autorisation et d'authentification en fonction de vos besoins spécifiques.
+Les propriétés spring.security.oauth2.client.registration.github.client-id et spring.security.oauth2.client.registration.github.client-secret sont utilisées pour configurer l'authentification OAuth2 avec GitHub dans une application Spring Boot. Voici une explication de ces propriétés :
+
+spring.security.oauth2.client.registration.github.client-id: Il s'agit de l'identifiant client (client ID) fourni par GitHub lors de l'enregistrement de votre application. Cet identifiant est utilisé pour identifier votre application auprès du fournisseur OAuth2, dans ce cas GitHub.
+
+spring.security.oauth2.client.registration.github.client-secret: Il s'agit du secret client (client secret) fourni par GitHub lors de l'enregistrement de votre application. Ce secret est utilisé comme une forme d'authentification lors de l'échange de jetons OAuth2 entre votre application et GitHub.
+
+Ces propriétés sont utilisées dans la configuration de Spring Security pour spécifier les détails de l'enregistrement de l'application auprès du fournisseur OAuth2 (GitHub). Lorsque votre application Spring Boot tente de se connecter à GitHub pour l'authentification, elle utilise ces informations pour établir une connexion sécurisée et obtenir un jeton d'accès valide.
 
 
